@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Feen — النسخة الكاملة</title>
+  <link rel="icon" href="./assets/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./styles.css" />
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+</head>
+
+<body>
+  <div class="bg"></div>
+
+  <main class="shell">
+    <section class="card glass">
+      <header class="header">
+        <div class="brand">
+          <img class="logoImg" src="./assets/logo.svg" alt="Feen Logo" />
+          <div class="brandText">
+            <h1>فين</h1>
+            <p>نسخة شغّالة: تسجيل + خريطة + لايف لوكيشن + واتساب</p>
+          </div>
+        </div>
+
+        <div class="themeBar">
+          <button class="pill" data-theme="light" type="button">نهاري</button>
+          <button class="pill" data-theme="dark" type="button">داكن</button>
+          <button class="pill" data-theme="midnight" type="button">مظلم</button>
+        </div>
+      </header>
+
+      <div class="grid">
+        <!-- Left: Auth + Actions + Contact -->
+        <div class="panel glass">
+          <h2>الحساب</h2>
+
+          <div id="authLocked" class="authBox">
+            <div class="hint">حط مفاتيح Supabase في <code>app.js</code> وبعدين سجّل دخول.</div>
+
+            <div class="authGrid">
+              <button class="authBtn google" id="btnGoogle" type="button"><span>G</span> تسجيل بجوجل</button>
+              <button class="authBtn facebook" id="btnFacebook" type="button" disabled title="اختياري"> <span>f</span> فيسبوك (اختياري)</button>
+              <button class="authBtn apple" id="btnApple" type="button" disabled title="اختياري"> <span></span> أبل (اختياري)</button>
+            </div>
+
+            <div class="miniForm glass">
+              <div class="miniTitle">أو بإيميل وباسورد</div>
+              <label class="field">
+                <span>الإيميل</span>
+                <input id="email" type="email" placeholder="name@email.com" autocomplete="email" />
+              </label>
+              <label class="field">
+                <span>الباسورد</span>
+                <input id="password" type="password" placeholder="••••••••" autocomplete="current-password" />
+              </label>
+
+              <div class="btnRow">
+                <button id="btnSignUp" class="btn glassBtn" type="button">إنشاء حساب</button>
+                <button id="btnSignIn" class="btn glassBtn primary" type="button">تسجيل دخول</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="authOpen" class="authBox hidden">
+            <div class="userRow">
+              <div class="userMeta">
+                <div class="userTitle">أهلًا 👋</div>
+                <div id="userEmail" class="userEmail">—</div>
+              </div>
+              <button id="btnLogout" class="btn glassBtn danger" type="button">تسجيل خروج</button>
+            </div>
+            <div class="statusBox">
+              <div class="statusTitle">Session</div>
+              <div id="sessionStatus" class="statusText">Logged in</div>
+            </div>
+          </div>
+
+          <hr class="sep" />
+
+          <h2>الخريطة والموقع</h2>
+          <div class="btnRow">
+            <button id="btnLocate" class="btn glassBtn" type="button">حدد موقعي</button>
+            <button id="btnLive" class="btn glassBtn" type="button">تشغيل لايف لوكيشن</button>
+          </div>
+          <div class="btnRow">
+            <button id="btnStopLive" class="btn glassBtn danger" type="button" disabled>إيقاف اللايف</button>
+            <button id="btnCopyCoords" class="btn glassBtn" type="button" disabled>نسخ الإحداثيات</button>
+          </div>
+
+          <div class="statusBox">
+            <div class="statusTitle">الحالة</div>
+            <div id="status" class="statusText">جاهز</div>
+            <div id="coords" class="coordsText">—</div>
+          </div>
+
+          <hr class="sep" />
+
+          <div class="miniForm glass">
+            <h2>تواصل معنا</h2>
+            <p class="hint">زرار واحد يفتح واتساب على رقم: <b>01278214028</b></p>
+
+            <label class="field">
+              <span>الاسم</span>
+              <input id="name" type="text" placeholder="اسمك" autocomplete="name" />
+            </label>
+
+            <label class="field">
+              <span>الرسالة</span>
+              <textarea id="msg" rows="3" placeholder="اكتب رسالتك هنا..."></textarea>
+            </label>
+
+            <button id="btnWhatsApp" class="btn glassBtn primary" type="button">إرسال على واتساب</button>
+          </div>
+        </div>
+
+        <!-- Right: Map -->
+        <div class="mapWrap glass">
+          <div class="mapHeader">
+            <div>
+              <h2>الخريطة</h2>
+              <p class="hint">OpenStreetMap + مؤشر لمكانك + دائرة دقة + تحديث لايف</p>
+            </div>
+            <div class="chip" id="gpsChip">GPS: OFF</div>
+          </div>
+
+          <div id="map" class="map"></div>
+
+          <footer class="foot glass">
+            <div class="footItem">
+              <div class="k">الدقة</div>
+              <div id="acc" class="v">—</div>
+            </div>
+            <div class="footItem">
+              <div class="k">آخر تحديث</div>
+              <div id="last" class="v">—</div>
+            </div>
+            <div class="footItem">
+              <div class="k">الإذن</div>
+              <div id="perm" class="v">—</div>
+            </div>
+          </footer>
+        </div>
+      </div>
+
+      <footer class="bottomNote">
+        <span>⚠️ ملاحظة: تسجيل Google/Email بيشتغل بعد ما تحط مفاتيح Supabase وتفعل Providers من لوحة Supabase.</span>
+      </footer>
+    </section>
+  </main>
+
+  <!-- Leaflet -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <!-- Supabase JS (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="./app.js"></script>
+</body>
+</html>
